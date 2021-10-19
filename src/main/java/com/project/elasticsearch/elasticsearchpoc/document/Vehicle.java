@@ -1,10 +1,17 @@
 package com.project.elasticsearch.elasticsearchpoc.document;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
+
 public class Vehicle {
 
     private String id;
 
     private String number;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date created;
 
     public String getId() {
         return id;
@@ -20,5 +27,13 @@ public class Vehicle {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
     }
 }

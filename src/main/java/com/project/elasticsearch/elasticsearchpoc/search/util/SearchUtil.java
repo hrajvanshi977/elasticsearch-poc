@@ -9,6 +9,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Date;
 import java.util.List;
 
 public class SearchUtil {
@@ -28,6 +29,45 @@ public class SearchUtil {
         }
     }
 
+    public static SearchRequest buildSearchRequest(
+            final String indexName,
+            final String field,
+            final Date date) {
+        try {
+            final SearchSourceBuilder builder = new SearchSourceBuilder().postFilter(getQueryBuilder(field, date));
+            final SearchRequest request = new SearchRequest(indexName);
+            request.source(builder);
+            return request;
+        } catch (final Exception exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    }
+
+    public static SearchRequest buildSearchRequest(
+            final String indexName,
+            final String field,
+            final Date from,
+            final Date to) {
+        try {
+            final SearchSourceBuilder builder = new SearchSourceBuilder().postFilter(getQueryBuilder(field, from, to)).size(100);
+            final SearchRequest request = new SearchRequest(indexName);
+            request.source(builder);
+            return request;
+        } catch (final Exception exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    }
+
+    public static QueryBuilder getQueryBuilder(final String field, final Date date) {
+        return QueryBuilders.rangeQuery(field).gte(date);
+    }
+    public static QueryBuilder getQueryBuilder(final String field, final Date from,  final Date to) {
+        return QueryBuilders.rangeQuery(field).gte(from).lte(to);
+    }
+
+
     public static QueryBuilder getQueryBuilder(final SearchRequestDTO searchRequestDTO) {
         if (searchRequestDTO == null) {
             return null;
@@ -42,7 +82,6 @@ public class SearchUtil {
             MultiMatchQueryBuilder queryBuilder = QueryBuilders.multiMatchQuery(searchRequestDTO.getSearchTerm())
                     .type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
                     .operator(Operator.AND);
-
             fields.forEach(queryBuilder::field);
             return queryBuilder;
         }
