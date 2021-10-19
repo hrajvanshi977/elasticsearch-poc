@@ -42,7 +42,6 @@ public class SearchUtil {
             MultiMatchQueryBuilder queryBuilder = QueryBuilders.multiMatchQuery(searchRequestDTO.getSearchTerm())
                     .type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
                     .operator(Operator.AND);
-
             fields.forEach(queryBuilder::field);
             return queryBuilder;
         }

@@ -43,14 +43,10 @@ public class VehicleService {
             LOG.error("Failed to build the search request");
             return Collections.emptyList();
         }
-
         try {
             final SearchResponse response = client.search(request, RequestOptions.DEFAULT);
-
             final SearchHit[] searchHits = response.getHits().getHits();
-
             final List<Vehicle> vehicles = new ArrayList<>(searchHits.length);
-
             for (SearchHit hit : searchHits) {
                 vehicles.add(MAPPER.readValue(hit.getSourceAsString(), Vehicle.class));
             }
